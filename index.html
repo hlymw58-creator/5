@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
-    <!-- مكتبة المشغل الاحترافي -->
+    <!-- مكتبة المشغل -->
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
     <style>
@@ -40,12 +40,156 @@
             overflow-x: hidden;
         }
 
-        .bg-overlay {
+        /* 🚨 شاشة الاختبار المستقلة بالكامل (Screen فوق الصفحة كلها) 🚨 */
+        #full-quiz-screen {
             position: fixed;
             top: 0;
             left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #030a07;
+            background: radial-gradient(circle at center, #0a251b 0%, #020805 100%);
+            z-index: 2147483647 !important; /* أعلى طبقة ظهور في المتصفح */
+            display: none; /* تكون مخفية تماماً */
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .quiz-card-box {
+            background: linear-gradient(145deg, #0a1912, #0f291e);
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 30px 25px;
             width: 100%;
-            height: 100%;
+            max-width: 620px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.4), 0 0 100px rgba(0, 0, 0, 0.95);
+            animation: zoomInScreen 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .quiz-badge {
+            align-self: center;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 6px 22px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .quiz-header-title {
+            color: #ffffff;
+            font-family: 'Amiri', serif;
+            font-size: clamp(1.6rem, 4vw, 2.3rem);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quiz-question-box {
+            background: rgba(0, 0, 0, 0.55);
+            border-right: 5px solid var(--accent-gold);
+            border-radius: 10px;
+            padding: 18px 20px;
+            text-align: right;
+        }
+
+        .quiz-question-text {
+            color: #ffffff;
+            font-size: clamp(1.1rem, 2.8vw, 1.45rem);
+            font-weight: 900;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .quiz-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: right;
+        }
+
+        .quiz-option-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: #e0e0e0;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .quiz-option-item:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--accent-gold);
+            color: #fff;
+            transform: translateX(-4px);
+        }
+
+        .quiz-option-item.selected {
+            background: var(--accent-gold);
+            border-color: #ffffff;
+            color: #05130e;
+            font-weight: 900;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        }
+
+        .btn-confirm-quiz {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #d4af37, #f4e285);
+            color: #05130e;
+            font-weight: 900;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-confirm-quiz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-rewind-quiz {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ff4d4d;
+            border-radius: 10px;
+            background: rgba(255, 77, 77, 0.12);
+            color: #ff9999;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            transition: background 0.2s;
+        }
+
+        .btn-rewind-quiz:hover {
+            background: rgba(255, 77, 77, 0.25);
+        }
+
+        /* --- تصميم مشغل الفيديو والصفحة العامة --- */
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, rgba(5, 19, 14, 0.88), rgba(27, 67, 50, 0.82)), 
                         url('https://i.ibb.co/L53jJ0C/Screenshot-2026-06-20-215829.png') center/cover no-repeat;
             filter: blur(5px);
@@ -55,8 +199,7 @@
 
         .bg-text-watermark {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%) rotate(-15deg);
             font-family: 'Amiri', serif;
             font-size: clamp(3rem, 12vw, 8rem);
@@ -69,12 +212,8 @@
 
         #particles-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-            pointer-events: none;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2; pointer-events: none;
         }
 
         .main-wrapper {
@@ -89,11 +228,7 @@
             padding-bottom: 110px;
         }
 
-        .header-card {
-            text-align: center;
-            margin-bottom: 15px;
-            animation: fadeInDown 1s ease-out;
-        }
+        .header-card { text-align: center; margin-bottom: 15px; }
 
         .platform-title {
             font-family: 'Amiri', serif;
@@ -114,36 +249,24 @@
             width: 100%;
             background: var(--card-bg);
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border-radius: 18px;
             padding: 12px;
             border: 2px solid var(--accent-gold);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9),
-                        0 0 25px rgba(212, 175, 55, 0.25);
-            animation: fadeInUp 1s ease-out;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 175, 55, 0.25);
             position: relative;
         }
 
         .video-container {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             border-radius: 12px;
             overflow: hidden;
             background: #000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .plyr__video-embed iframe {
-            pointer-events: none !important;
-            transform: scale(1.0) !important;
         }
 
         .touch-controls-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+            top: 0; left: 0; width: 100%;
             height: calc(100% - 50px);
             z-index: 25;
             display: flex;
@@ -151,13 +274,9 @@
 
         .touch-zone {
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; cursor: pointer;
         }
-
         .touch-zone.seek-right { width: 15%; }
         .touch-zone.play-center { width: 70%; }
         .touch-zone.seek-left { width: 15%; }
@@ -172,21 +291,16 @@
             font-weight: bold;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.2s ease, transform 0.2s ease;
+            transition: opacity 0.2s, transform 0.2s;
             transform: scale(0.7);
             border: 1px solid var(--accent-gold);
-            white-space: nowrap;
         }
 
-        .seek-feedback.show {
-            opacity: 1;
-            transform: scale(1);
-        }
+        .seek-feedback.show { opacity: 1; transform: scale(1); }
 
         .plyr #student-watermark, #student-watermark {
             position: absolute;
-            top: 8px;
-            right: 12px;
+            top: 8px; right: 12px;
             z-index: 99 !important;
             color: rgba(255, 255, 255, 0.4);
             font-size: 0.55rem !important;
@@ -195,323 +309,99 @@
             background: rgba(0, 0, 0, 0.2);
             padding: 2px 6px;
             border-radius: 8px;
-            letter-spacing: 0.2px;
-            backdrop-filter: blur(1px);
-            transition: all 3s ease-in-out;
             border: 1px solid rgba(212, 175, 55, 0.12);
-            white-space: nowrap;
-        }
-
-        /* --- 🚨 شاشة الاختبار العائمة الكاملة (تغطي الشاشة بأكملها بشكل كامل) 🚨 --- */
-        .full-screen-quiz-page {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #05130e;
-            background: radial-gradient(circle at center, #0a251b 0%, #030a07 100%);
-            z-index: 2147483647 !important; /* أعلى قيمة Z-Index ممكنة في المتصفحات */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            overflow-y: auto;
-        }
-
-        .exam-card {
-            background: linear-gradient(145deg, #0a1912, #0f291e);
-            border: 2px solid var(--accent-gold);
-            border-radius: 20px;
-            padding: 25px;
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.5), 0 0 100px rgba(0, 0, 0, 0.9);
-            animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .exam-badge {
-            align-self: center;
-            background: rgba(212, 175, 55, 0.15);
-            border: 1px solid var(--accent-gold);
-            color: var(--accent-gold);
-            padding: 6px 20px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .exam-title {
-            color: #ffffff;
-            font-family: 'Amiri', serif;
-            font-size: clamp(1.6rem, 4vw, 2.2rem);
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .exam-question-box {
-            background: rgba(0, 0, 0, 0.5);
-            border-right: 5px solid var(--accent-gold);
-            border-radius: 10px;
-            padding: 16px 20px;
-            text-align: right;
-            margin: 5px 0;
-        }
-
-        .exam-question-text {
-            color: #ffffff;
-            font-size: clamp(1.1rem, 2.8vw, 1.4rem);
-            font-weight: 900;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .exam-options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            text-align: right;
-        }
-
-        .exam-option-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1.5px solid rgba(212, 175, 55, 0.4);
-            border-radius: 12px;
-            padding: 14px 18px;
-            color: #e0e0e0;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 1.05rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .exam-option-btn:hover {
-            background: rgba(212, 175, 55, 0.2);
-            border-color: var(--accent-gold);
-            color: #fff;
-            transform: translateX(-4px);
-        }
-
-        .exam-option-btn.selected {
-            background: var(--accent-gold);
-            border-color: #ffffff;
-            color: #05130e;
-            font-weight: 900;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
         }
 
         /* --- نافذة تسجيل الدخول --- */
         .modal-overlay-global {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(5, 19, 14, 0.98);
             backdrop-filter: blur(10px);
             z-index: 999999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             padding: 20px;
         }
 
-        .input-group {
-            margin-bottom: 14px;
-            text-align: right;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #ddd;
-            font-size: 0.85rem;
-        }
-
+        .input-group { margin-bottom: 14px; text-align: right; }
+        .input-group label { display: block; margin-bottom: 5px; color: #ddd; font-size: 0.85rem; }
         .input-group input {
-            width: 100%;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--accent-gold);
-            background: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 0.95rem;
-            outline: none;
-            text-align: center;
+            width: 100%; padding: 10px 12px; border-radius: 8px;
+            border: 1px solid var(--accent-gold); background: rgba(0, 0, 0, 0.5);
+            color: #fff; font-family: 'Tajawal', sans-serif; text-align: center;
         }
 
-        .start-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(45deg, #d4af37, #f4e285);
-            color: #05130e;
-            font-weight: 900;
-            font-size: 1.1rem;
-            cursor: pointer;
-            font-family: 'Tajawal', sans-serif;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-        }
-
-        .start-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
-        }
-
-        .rewind-btn {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid #ff4d4d;
-            border-radius: 10px;
-            background: rgba(255, 77, 77, 0.12);
-            color: #ff9999;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            font-family: 'Tajawal', sans-serif;
-            transition: background 0.2s;
-        }
-
-        .rewind-btn:hover {
-            background: rgba(255, 77, 77, 0.25);
-        }
-
-        /* --- شريط التواصل --- */
+        /* --- أزرار التواصل --- */
         .bottom-actions-container {
-            position: fixed;
-            bottom: 12px;
-            z-index: 100;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
-            width: 95%;
-            max-width: 500px;
+            position: fixed; bottom: 12px; z-index: 100;
+            display: flex; gap: 10px; align-items: center; justify-content: center;
+            width: 95%; max-width: 500px;
         }
 
         .whatsapp-float-bar {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(10, 25, 18, 0.92);
-            border: 1.5px solid #25D366;
-            padding: 8px 12px;
-            border-radius: 50px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            text-decoration: none;
-            color: #ffffff;
-            transition: all 0.3s ease;
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            background: rgba(10, 25, 18, 0.92); border: 1.5px solid #25D366;
+            padding: 8px 12px; border-radius: 50px; text-decoration: none; color: #fff;
         }
 
-        .whatsapp-float-bar.tech-support {
-            border-color: var(--accent-gold);
-        }
+        .whatsapp-float-bar.tech-support { border-color: var(--accent-gold); }
+        .whatsapp-icon { font-size: 1.3rem; color: #25D366; margin-left: 6px; }
+        .tech-support .whatsapp-icon { color: var(--accent-gold); }
+        .whatsapp-text { display: flex; flex-direction: column; text-align: right; }
+        .whatsapp-title { font-weight: 700; font-size: 0.8rem; }
+        .whatsapp-number { font-size: 0.7rem; color: var(--soft-gold); direction: ltr; }
 
-        .whatsapp-icon {
-            font-size: 1.3rem;
-            color: #25D366;
-            margin-left: 6px;
-        }
-
-        .tech-support .whatsapp-icon {
-            color: var(--accent-gold);
-        }
-
-        .whatsapp-text {
-            display: flex;
-            flex-direction: column;
-            text-align: right;
-        }
-
-        .whatsapp-title {
-            font-weight: 700;
-            font-size: 0.8rem;
-        }
-
-        .whatsapp-number {
-            font-size: 0.7rem;
-            color: var(--soft-gold);
-            direction: ltr;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes scaleUp {
+        @keyframes zoomInScreen {
             from { opacity: 0; transform: scale(0.85); }
             to { opacity: 1; transform: scale(1); }
         }
 
         @media (max-width: 600px) {
             .main-wrapper { padding: 10px 5px; padding-bottom: 100px; }
-            .player-card { padding: 4px; }
-            .exam-card { padding: 18px 14px; gap: 10px; }
+            .quiz-card-box { padding: 20px 15px; gap: 12px; }
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- 🚨 صفحة/شاشة الاختبار الشاملة بالكامل (مستقلة تماماً وخارج الفيديو) 🚨 -->
-    <div class="full-screen-quiz-page" id="quiz-page-overlay" style="display: none;">
-        <div class="exam-card">
-            <div class="exam-badge">
-                <i class="fa-solid fa-pen-nib"></i> <span id="quiz-badge-text">سؤال تقييم الفهم</span>
+    <!-- 🚨 1. شاشة الاختبار المستقلة (مفصولة عن الفيديو وتظهر فقط عند الدقيقة المحددة) 🚨 -->
+    <div id="full-quiz-screen">
+        <div class="quiz-card-box">
+            <div class="quiz-badge">
+                <i class="fa-solid fa-pen-nib"></i> <span id="quiz-badge-text">اختبار تقييمي</span>
             </div>
-            <h2 class="exam-title">
+            <h2 class="quiz-header-title">
                 <i class="fa-solid fa-graduation-cap" style="color: var(--accent-gold);"></i>
                 اختبار مرحلي إجباري
             </h2>
             
-            <div class="exam-question-box">
-                <p class="exam-question-text" id="quiz-question-text">نص السؤال يظهر هنا...</p>
+            <div class="quiz-question-box">
+                <p class="quiz-question-text" id="quiz-question-text">نص السؤال يظهر هنا...</p>
             </div>
             
-            <div class="exam-options-container" id="quiz-options">
-                <!-- الخيارات تُولَّد برمجياً -->
+            <div class="quiz-options-list" id="quiz-options-container">
+                <!-- خيارات الإجابة تتولّد برمجياً -->
             </div>
 
             <p id="quiz-error-msg" style="color: #ff4d4d; font-size: 0.95rem; font-weight: 700; display: none; margin: 2px 0;">
-                ⚠️ إجابتك خاطئة! يرجى إرجاع الشرح لإعادة التركيز والحل مجدداً.
+                ⚠️ إجابة غير صحيحة! أعد الشرح وركّز جيداً لحل السؤال.
             </p>
 
-            <button type="button" class="start-btn" onclick="submitQuizAnswer()">
-                تأكيد الإجابة واستكمال الدرس <i class="fa-solid fa-circle-check mr-1"></i>
+            <button type="button" class="btn-confirm-quiz" onclick="submitQuizAnswer()">
+                تأكيد الإجابة ومتابعة الدرس <i class="fa-solid fa-circle-check mr-1"></i>
             </button>
-            <button type="button" class="rewind-btn" onclick="rewindLessonChunk()">
-                <i class="fa-solid fa-rotate-left mr-1"></i> لا أعرف الإجابة، أريد إعادة سماع الـ 10 دقائق الأخيرة
+            <button type="button" class="btn-rewind-quiz" onclick="rewindLessonChunk()">
+                <i class="fa-solid fa-rotate-left mr-1"></i> أريد إرجاع الشرح 10 دقائق للخلف
             </button>
         </div>
     </div>
 
-    <!-- نافذة إدخال بيانات الطالب -->
+    <!-- 2. نافذة إدخال بيانات الطالب -->
     <div class="modal-overlay-global" id="login-modal">
-        <div class="exam-card" style="max-width: 420px;">
-            <div class="exam-badge"><i class="fa-solid fa-shield-halved"></i> المشاهدة المحمية</div>
-            <h2 class="exam-title" style="color: var(--accent-gold);">منصة الشافعي الصغير</h2>
-            <p style="color: var(--soft-gold); font-size: 0.95rem; margin-top: -5px;">يرجى تسجيل بياناتك للبدء في مشاهدة الدرس</p>
+        <div class="quiz-card-box" style="max-width: 420px;">
+            <div class="quiz-badge"><i class="fa-solid fa-shield-halved"></i> المشاهدة المحمية</div>
+            <h2 class="quiz-header-title" style="color: var(--accent-gold);">منصة الشافعي الصغير</h2>
+            <p style="color: var(--soft-gold); font-size: 0.95rem; margin-top: -5px;">سجّل بياناتك للبدء في درس اليوم</p>
             <form id="student-form" onsubmit="submitStudentData(event)">
                 <div class="input-group">
                     <label>اسم الطالب الرباعي:</label>
@@ -521,12 +411,12 @@
                     <label>رقم الهاتف:</label>
                     <input type="tel" id="student-phone-input" required placeholder="01xxxxxxxxx" pattern="[0-9]{11}">
                 </div>
-                <button type="submit" class="start-btn">دخول لدرس اليوم <i class="fa-solid fa-play mr-1"></i></button>
+                <button type="submit" class="btn-confirm-quiz">دخول للدرس <i class="fa-solid fa-play mr-1"></i></button>
             </form>
         </div>
     </div>
 
-    <!-- الخلفية والجزيئات المتحركة -->
+    <!-- 3. الخلفية ومكونات الصفحة -->
     <div class="bg-overlay"></div>
     <div class="bg-text-watermark">أ. أبو بكر الشافعي</div>
     <canvas id="particles-canvas"></canvas>
@@ -537,29 +427,26 @@
             <div class="teacher-name">إعداد أ. أبو بكر الشافعي</div>
         </div>
 
+        <!-- 4. مشغل الفيديو الصريح -->
         <div class="player-card" id="player-card-box">
             <div class="video-container" id="video-box">
-
-                <!-- طبقة التفاعل السريعة بلمسة واحدة -->
                 <div class="touch-controls-overlay">
-                    <div class="touch-zone seek-right" id="zone-right" title="تقديم 10 ثوانٍ">
+                    <div class="touch-zone seek-right" id="zone-right">
                         <div class="seek-feedback" id="feedback-right">+10s</div>
                     </div>
-                    <div class="touch-zone play-center" id="zone-center" title="تشغيل / إيقاف"></div>
-                    <div class="touch-zone seek-left" id="zone-left" title="تأخير 10 ثوانٍ">
+                    <div class="touch-zone play-center" id="zone-center"></div>
+                    <div class="touch-zone seek-left" id="zone-left">
                         <div class="seek-feedback" id="feedback-left">-10s</div>
                     </div>
                 </div>
-
-                <!-- عنصر المشغل -->
                 <div id="player"></div>
             </div>
         </div>
     </div>
 
-    <!-- أزرار الواتساب والدعم الفني -->
+    <!-- أزرار الواتساب -->
     <div class="bottom-actions-container">
-        <a href="https://wa.me/201101662590?text=السلام%20عليكم%20يا%20مستر%20أبو%20بكر،%20عندي%20استفسار" target="_blank" class="whatsapp-float-bar">
+        <a href="https://wa.me/201101662590?text=السلام%20عليكم%20يا%20مستر%20أبو%20بكر" target="_blank" class="whatsapp-float-bar">
             <i class="fa-brands fa-whatsapp whatsapp-icon"></i>
             <div class="whatsapp-text">
                 <span class="whatsapp-title">واتساب المستر</span>
@@ -567,7 +454,7 @@
             </div>
         </a>
 
-        <a href="https://wa.me/201099442329?text=السلام%20عليكم،%20أحتاج%20مساعدة%20من%20الدعم%20الفني" target="_blank" class="whatsapp-float-bar tech-support">
+        <a href="https://wa.me/201099442329?text=السلام%20عليكم%20الدعم%20الفني" target="_blank" class="whatsapp-float-bar tech-support">
             <i class="fa-solid fa-headset whatsapp-icon"></i>
             <div class="whatsapp-text">
                 <span class="whatsapp-title">الدعم الفني</span>
@@ -576,7 +463,6 @@
         </a>
     </div>
 
-    <!-- مكتبة المشغل -->
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
     <script>
         // ====================================================
@@ -592,123 +478,88 @@
         watermarkDiv.id = 'student-watermark';
 
         const player = new Plyr('#player', {
-            controls: [
-                'play-large',   
-                'rewind',       
-                'play',         
-                'fast-forward', 
-                'progress',     
-                'current-time', 
-                'mute',         
-                'volume',       
-                'settings',     
-                'fullscreen'    
-            ],
+            controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
             seekTime: 10,
             settings: ['speed'],
             speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
-            youtube: { 
-                noCookie: true, 
-                rel: 0, 
-                showinfo: 0, 
-                iv_load_policy: 3, 
-                modestbranding: 1,
-                controls: 0,
-                disablekb: 1
-            }
+            youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1, controls: 0, disablekb: 1 }
         });
 
         player.on('ready', () => {
             const plyrContainer = document.querySelector('.plyr');
-            if (plyrContainer) {
-                plyrContainer.appendChild(watermarkDiv);
-            }
+            if (plyrContainer) plyrContainer.appendChild(watermarkDiv);
         });
 
         // ====================================================
-        // 📚 بنك الأسئلة والمحطات المحددة
+        // 📚 قائمة الاختبارات (كل محطة بوقتها المحدد بالثواني)
         // ====================================================
         const lessonQuizzes = [
             {
-                time: 600, // الدقيقة 10 (600 ثانية)
+                time: 600, // 600 ثانية = الدقيقة 10
                 question: "راوي الحديث روى 355 حديثاً؟",
                 options: ["صح", "خطأ"],
-                correctIndex: 1 
+                correctIndex: 1,
+                solved: false
             },
             {
-                time: 1200, // الدقيقة 20
+                time: 1200, // 1200 ثانية = الدقيقة 20
                 question: "الشافعية فضّلت المشي في تشييع الجنازة:",
                 options: ["أمام الجنازة", "خلف الجنازة", "أجازوا التقديم أو التأخير"],
-                correctIndex: 0 
+                correctIndex: 0,
+                solved: false
             },
             {
                 time: 1800, // الدقيقة 30
                 question: "هل نصر المظلوم يكون للمسلم فقط؟",
                 options: ["صح", "خطأ"],
-                correctIndex: 1 
-            },
-            {
-                time: 2400, // الدقيقة 40
-                question: "ما حكم لبس الذهب والحرير للنساء؟",
-                options: ["حرام", "يكره", "مباح"],
-                correctIndex: 2 
-            },
-            {
-                time: 3000, // الدقيقة 50
-                question: "ما هو الركن الساقط من الراوي في المنهيات؟",
-                options: ["الكذب", "النفاق", "ركوب المياثر"],
-                correctIndex: 2 
+                correctIndex: 1,
+                solved: false
             }
         ];
 
         let currentActiveQuiz = null;
         let selectedOptionIndex = null;
-        let lastAllowedTime = 0; 
 
-        // --- مراقبة زمن التشغيل لمنع التقديم ولعرض الاختبار فوراً ---
+        // --- مراقبة الوقت أثناء تشغيل الفيديو ---
         player.on('timeupdate', () => {
             const currentTime = Math.floor(player.currentTime);
 
             for (let i = 0; i < lessonQuizzes.length; i++) {
                 const quiz = lessonQuizzes[i];
+                // إذا وصلنا لوقت الاختبار ولم يُحل بعد
                 if (currentTime >= quiz.time && !quiz.solved) {
                     player.pause();
                     player.currentTime = quiz.time; 
-                    
-                    // إغلاق أي وضع ملء الشاشة افتراضي للمتصفح حتى تظهر الصفحة التفاعلية بدون عوائق
+
+                    // للخروج من وضع ملء الشاشة إذا كان مفعلاً كي يظهر السكرين كاملاً
                     if (document.fullscreenElement) {
                         document.exitFullscreen().catch(err => console.log(err));
                     }
 
-                    openQuizPage(quiz, i + 1);
+                    // إظهار سكرين الاختبار
+                    displayQuizScreen(quiz, i + 1);
                     return;
                 }
             }
-
-            if (currentTime > lastAllowedTime) {
-                lastAllowedTime = currentTime;
-            }
         });
 
-        // حماية من السحب والتقديم (Seeking)
+        // منع التقديم اليدوي للسؤال المنشود
         player.on('seeking', () => {
             for (let i = 0; i < lessonQuizzes.length; i++) {
                 const quiz = lessonQuizzes[i];
                 if (player.currentTime > quiz.time && !quiz.solved) {
                     player.currentTime = quiz.time;
-                    
                     if (document.fullscreenElement) {
                         document.exitFullscreen().catch(err => console.log(err));
                     }
-
-                    openQuizPage(quiz, i + 1);
+                    displayQuizScreen(quiz, i + 1);
                     break;
                 }
             }
         });
 
-        // --- إظهار صفحة الاختبار الشاملة المستقلة ---
-        function openQuizPage(quiz, index) {
+        // --- إظهار سكرين الاختبار فوق الصفحة بالكامل ---
+        function displayQuizScreen(quiz, index) {
             currentActiveQuiz = quiz;
             selectedOptionIndex = null;
             
@@ -716,24 +567,24 @@
             document.getElementById('quiz-question-text').innerText = quiz.question;
             document.getElementById('quiz-error-msg').style.display = 'none';
 
-            const optionsContainer = document.getElementById('quiz-options');
+            const optionsContainer = document.getElementById('quiz-options-container');
             optionsContainer.innerHTML = '';
 
             quiz.options.forEach((optText, idx) => {
                 const btn = document.createElement('div');
-                btn.className = 'exam-option-btn';
+                btn.className = 'quiz-option-item';
                 btn.innerHTML = `<span>${optText}</span> <i class="fa-regular fa-circle"></i>`;
                 btn.onclick = () => selectOption(idx, btn);
                 optionsContainer.appendChild(btn);
             });
 
-            // إظهار الشاشة بالكامل فوق الصفحة بأكملها
-            document.getElementById('quiz-page-overlay').style.display = 'flex';
+            // جعل شاشة الاختبار تظهر كصفحة فوق الكل
+            document.getElementById('full-quiz-screen').style.display = 'flex';
         }
 
         function selectOption(index, element) {
             selectedOptionIndex = index;
-            const buttons = document.querySelectorAll('.exam-option-btn');
+            const buttons = document.querySelectorAll('.quiz-option-item');
             buttons.forEach(btn => {
                 btn.classList.remove('selected');
                 btn.querySelector('i').className = 'fa-regular fa-circle';
@@ -742,7 +593,7 @@
             element.querySelector('i').className = 'fa-solid fa-circle-check';
         }
 
-        // --- التحقق من الإجابة ---
+        // --- تأكيد الإجابة وإخفاء شاشة الاختبار عند الحل الصحيح ---
         function submitQuizAnswer() {
             if (selectedOptionIndex === null) {
                 alert('يرجى اختيار إجابة أولاً!');
@@ -750,53 +601,46 @@
             }
 
             if (selectedOptionIndex === currentActiveQuiz.correctIndex) {
+                // 1. تعليم السؤال بأنه تم حله
                 currentActiveQuiz.solved = true;
-                document.getElementById('quiz-page-overlay').style.display = 'none';
+                
+                // 2. إخفاء سكرين الاختبار بالكامل
+                document.getElementById('full-quiz-screen').style.display = 'none';
+                
+                // 3. استكمال تشغيل الفيديو تلقائياً
                 player.play();
             } else {
+                // إظهار رسالة الخطأ
                 document.getElementById('quiz-error-msg').style.display = 'block';
             }
         }
 
-        // --- إعادة الشرح 10 دقائق للوراء ---
+        // --- زر إرجاع الفيديو 10 دقائق للخلف ---
         function rewindLessonChunk() {
-            document.getElementById('quiz-page-overlay').style.display = 'none';
+            document.getElementById('full-quiz-screen').style.display = 'none';
             let targetTime = player.currentTime - 600; 
             if (targetTime < 0) targetTime = 0;
             player.currentTime = targetTime;
             player.play();
         }
 
-        // --- التفاعل السريع بلمسة واحدة ---
+        // --- التحكم بلمسات الفيديو السريعة ---
         const zoneRight = document.getElementById('zone-right');
         const zoneLeft = document.getElementById('zone-left');
         const zoneCenter = document.getElementById('zone-center');
-
         const feedbackRight = document.getElementById('feedback-right');
         const feedbackLeft = document.getElementById('feedback-left');
 
         function triggerFeedback(elem) {
             elem.classList.add('show');
-            setTimeout(() => {
-                elem.classList.remove('show');
-            }, 400);
+            setTimeout(() => elem.classList.remove('show'), 400);
         }
 
-        zoneRight.addEventListener('click', () => {
-            player.forward(10);
-            triggerFeedback(feedbackRight);
-        });
+        zoneRight.addEventListener('click', () => { player.forward(10); triggerFeedback(feedbackRight); });
+        zoneLeft.addEventListener('click', () => { player.rewind(10); triggerFeedback(feedbackLeft); });
+        zoneCenter.addEventListener('click', () => { player.togglePlay(); });
 
-        zoneLeft.addEventListener('click', () => {
-            player.rewind(10);
-            triggerFeedback(feedbackLeft);
-        });
-
-        zoneCenter.addEventListener('click', () => {
-            player.togglePlay();
-        });
-
-        // --- تسجيل الطالب وتحريك العلامة المائية ---
+        // --- إدخال بيانات الطالب ---
         function submitStudentData(event) {
             event.preventDefault();
             const name = document.getElementById('student-name-input').value.trim();
@@ -812,7 +656,6 @@
                     { top: '75%', right: '5%' },
                     { top: '75%', right: '70%' }
                 ];
-
                 let currentCorner = 0;
                 setInterval(() => {
                     currentCorner = (currentCorner + 1) % cornerPositions.length;
@@ -822,7 +665,7 @@
             }
         }
 
-        // --- خلفية الجزيئات المتحركة ---
+        // --- خلفية الجزيئات ---
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particlesArray = [];
@@ -845,14 +688,11 @@
                 this.color = 'rgba(212, 175, 55, ';
                 this.alpha = Math.random() * 0.6 + 0.2;
             }
-
             update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
+                this.x += this.speedX; this.y += this.speedY;
                 if (this.x < 0 || this.x > width) this.speedX *= -1;
                 if (this.y < 0 || this.y > height) this.speedY *= -1;
             }
-
             draw() {
                 ctx.fillStyle = this.color + this.alpha + ')';
                 ctx.beginPath();
@@ -863,29 +703,8 @@
 
         function init() {
             particlesArray = [];
-            const numberOfParticles = Math.floor((width * height) / 12000);
-            for (let i = 0; i < numberOfParticles; i++) {
+            for (let i = 0; i < Math.floor((width * height) / 12000); i++) {
                 particlesArray.push(new Particle());
-            }
-        }
-
-        function connectParticles() {
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let dx = particlesArray[a].x - particlesArray[b].x;
-                    let dy = particlesArray[a].y - particlesArray[b].y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < 100) {
-                        let opacity = 1 - (distance / 100);
-                        ctx.strokeStyle = `rgba(212, 175, 55, ${opacity * 0.15})`;
-                        ctx.lineWidth = 0.8;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
-                    }
-                }
             }
         }
 
@@ -895,14 +714,13 @@
                 particlesArray[i].update();
                 particlesArray[i].draw();
             }
-            connectParticles();
             requestAnimationFrame(animate);
         }
 
         init();
         animate();
 
-        // تعطيل كليك يمين والاختصارات
+        // حماية كليك يمين
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', e => {
             if ((e.ctrlKey && e.key === 's') || e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
